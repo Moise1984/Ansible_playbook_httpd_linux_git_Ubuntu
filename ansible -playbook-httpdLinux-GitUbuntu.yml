@@ -1,0 +1,48 @@
+# Moiseplaybook
+- name: # Deploy Apache webserver on Amz clients
+  hosts: Amz-clients
+  become: yes
+
+  tasks:
+    - name: Upgrade all packages
+      yum:
+        name: '*'
+        state: latest
+    - name: Install the latest version of Apache
+      yum:
+        name: httpd
+        state: present
+    - name: Start httpd service 
+      ansible.builtin.service:
+        name: httpd
+        state: started
+    - name: Enable service httpd, and not touch the state
+      ansible.builtin.service:
+        name: httpd
+        enabled: yes 
+    - name: Copy index.html from controller to Amz-linux host
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html/
+    - name: ping Amz clients   
+      ansible.builtin.ping:
+
+
+
+- name:  install GIT on Ubuntu-clients with a costumize message on these instances
+  hosts: Ubuntu-clients
+  become: yes
+
+  tasks:
+    - name: Updates apt cache
+      action: apt update_cache=true
+    - name: install git
+      apt:
+        name: git
+        state: present
+        update_cache: yes
+    - name: display the message
+      ansible.builtin.debug:
+        msg: stay focus work hard the key of success
+    - name: ping Ubuntu clients   
+      ansible.builtin.ping:
